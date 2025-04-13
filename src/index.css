@@ -1,0 +1,90 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 280 70% 98%;
+    --foreground: 278 75% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 278 75% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 278 75% 15%;
+
+    --primary: 266 80% 74%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 313 74% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 268 25% 90%;
+    --muted-foreground: 268 10% 45%;
+
+    --accent: 190 95% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 268 30% 85%;
+    --input: 268 30% 85%;
+    --ring: 266 80% 74%;
+
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    height: 100%;
+    @apply bg-background text-foreground;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  .cosmic-card {
+    @apply relative bg-white bg-opacity-30 backdrop-blur-md rounded-3xl border border-white border-opacity-40 shadow-lg p-6;
+  }
+  
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-vibrant;
+  }
+  
+  .cosmic-btn {
+    @apply bg-gradient-vibrant hover:opacity-90 text-white font-semibold py-4 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95;
+  }
+
+  .cosmic-container {
+    @apply max-w-md mx-auto px-4 py-6 min-h-screen flex flex-col;
+  }
+
+  .floating {
+    @apply animate-float;
+  }
+
+  .pulsing {
+    @apply animate-pulse-subtle;
+  }
+
+  .spinning {
+    @apply animate-spin-slow;
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "noUnusedLocals": false, // Allow unused vars for now
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": false, // Can be true for stricter checks
+    "target": "es2021", // Match Node.js 20 features
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "compileOnSave": true,
+  "include": [
+    "src"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "HoroscopoZap",
+  "short_name": "HoroscopoZap",
+  "description": "Analise conversas do WhatsApp de forma rápida, segura e divertida. Faça upload de arquivos .zip ou .txt exportados do WhatsApp e descubra insights únicos!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6d28d9",
+  "scope": "/",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48 64x64 96x96 128x128 256x256",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/website-image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "share_target": {
+    "action": "/receive-share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "file",
+          "accept": [".txt", "application/zip", ".zip"]
+        }
+      ]
+    }
+  }
+}

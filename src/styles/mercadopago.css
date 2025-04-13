@@ -1,0 +1,31 @@
+/* Força visibilidade dos iframes do Mercado Pago Checkout Transparente */
+
+#form-checkout__cardNumber iframe,
+#form-checkout__issuer iframe,
+#form-checkout__expirationDate iframe,
+#form-checkout__securityCode iframe,
+#form-checkout__installments iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 40px !important;
+  border: none !important;
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  background: transparent !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Garante que os containers estejam visíveis */
+#form-checkout__cardNumber,
+#form-checkout__issuer,
+#form-checkout__expirationDate,
+#form-checkout__securityCode,
+#form-checkout__installments {
+  min-height: 40px;
+  position: relative;
+  overflow: visible;
+  background: transparent;
+  z-index: 1;
+}
