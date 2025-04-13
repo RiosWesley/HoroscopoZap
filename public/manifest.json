@@ -5,20 +5,22 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#6d28d9",
+  "theme_color": "#c66dd6",
   "scope": "/",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "48x48 64x64 96x96 128x128 256x256",
-      "type": "image/x-icon"
+      "src": "/website-image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     },
+
     {
       "src": "/website-image.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "share_target": {
@@ -29,7 +31,7 @@
       "files": [
         {
           "name": "file",
-          "accept": [".txt", "application/zip", ".zip"]
+          "accept": ["application/zip"]
         }
       ]
     }
