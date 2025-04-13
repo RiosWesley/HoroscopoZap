@@ -298,9 +298,7 @@ flowchart TD
     class External_Services_Database external;
 ```
 
-*Self-correction*: The initial thought was just to remove quotes, but Mermaid requires valid IDs (no spaces, special chars) for class assignments. The correct approach is to assign an ID to the subgraph definition (e.g., `subgraph my_id ["My Descriptive Title"]`) and then use that ID in the `class` statement (e.g., `class my_id my_style;`). I've updated the `diff` to reflect this better approach, assigning valid IDs and using those for styling. This requires modifying the subgraph definitions as well.
 
----
 
 ## Fluxo Detalhado do Usuário
 
