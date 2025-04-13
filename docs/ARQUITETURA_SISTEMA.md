@@ -28,61 +28,149 @@ O sistema é uma aplicação web robusta e moderna, projetada para permitir que 
 
 ```mermaid
 flowchart TD
-    subgraph Frontend
-        WelcomePage[WelcomePage]
-        InstructionsPage[InstructionsPage]
-        AnalyzingPage[AnalyzingPage]
-        ResultsPage[ResultsPage]
-        PremiumPage[PremiumPage]
-        PaymentPage[PaymentPage]
-        NotFound[NotFound]
+    subgraph "User Interface (Frontend - React + Vite)"
+        direction LR
 
-        ChatAnalysisProvider[ChatAnalysisProvider (Contexto)]
-        useChatAnalysis[useChatAnalysis (Hook)]
-        parseChat[parseChat.ts]
-        analyzeChat[analyzeChat.ts]
+        subgraph "Pages (src/pages)"
+            WelcomePage["WelcomePage.tsx"]
+            InstructionsPage["InstructionsPage.tsx"]
+            AnalyzingPage["AnalyzingPage.tsx"]
+            ResultsPage["ResultsPage.tsx"]
+            PremiumPage["PremiumPage.tsx"]
+            PaymentPage["PaymentPage.tsx"]
+            ReceiveSharePage["ReceiveSharePage.tsx"]
+            AboutPage["About.tsx"]
+            PrivacyPolicyPage["PrivacyPolicy.tsx"]
+            TermsOfUsePage["TermsOfUse.tsx"]
+            NotFoundPage["NotFound.tsx"]
+            IndexPage["Index.tsx (Router & Layout)"]
+        end
 
+        subgraph "Core Logic & State"
+            ChatAnalysisProvider["ChatAnalysisContext.tsx\n(Provider)"]
+            useChatAnalysis["useChatAnalysis\n(Hook)"]
+            parseChat["parseChat.ts\n(Lib)"]
+            analyzeChat["analyzeChat.ts\n(Lib)"]
+        end
+
+        subgraph "UI Components (src/components)"
+            ResultComponents["Result Components\n(EmojiCloud, TimelineChart, etc.)"]
+            PremiumComponents["Premium Components\n(CrystalBall, etc.)"]
+            CommonUI["Common UI\n(Button, Card, etc. - src/components/ui)"]
+            LayoutComponents["Layout Components\n(GradientBackground, Logo, etc.)"]
+        end
+
+        subgraph "Hooks (src/hooks)"
+            useIsMobile["use-mobile.tsx"]
+            useAppToast["use-toast.ts"]
+        end
+
+        %% Fluxo Principal
+        IndexPage --> WelcomePage
         WelcomePage --> InstructionsPage
-        InstructionsPage -->|Upload chat| parseChat
-        parseChat --> analyzeChat
-        analyzeChat --> ChatAnalysisProvider
-        ChatAnalysisProvider --> ResultsPage
-        ChatAnalysisProvider --> PremiumPage
+        InstructionsPage -- Upload Chat --> parseChat
+        parseChat -- Parsed Messages --> analyzeChat
+        analyzeChat -- Analysis Results --> ChatAnalysisProvider
+        ChatAnalysisProvider -- Update Context --> AnalyzingPage
+        AnalyzingPage -- Analysis Complete --> ResultsPage
 
-        ResultsPage -->|Componentes| SenderFocus & ResultCard & ContactBubble & EmojiCloud & TimelineChart & SentimentChart & ShareableImage & ActivityHeatmap & CrystalBall & AdBanner & AnimatedText & StepIndicator & FloatingEmoji & GradientBackground & Logo
-        PremiumPage -->|Componentes| SenderFocus & ResultCard & ContactBubble & EmojiCloud & TimelineChart & SentimentChart & ShareableImage & ActivityHeatmap & CrystalBall & AdBanner & AnimatedText & StepIndicator & FloatingEmoji & GradientBackground & Logo
+        %% Navegação e Acesso a Dados
+        ResultsPage -- Access Context --> useChatAnalysis
+        PremiumPage -- Access Context --> useChatAnalysis
+        PaymentPage -- Access Context --> useChatAnalysis
 
-        ResultsPage -->|Hooks| useIsMobile & useToast
-        PremiumPage -->|Hooks| useIsMobile & useToast
+        ResultsPage -- Usa --> ResultComponents
+        ResultsPage -- Usa --> CommonUI
+        ResultsPage -- Usa --> LayoutComponents
+        ResultsPage -- Usa Hooks --> useIsMobile & useAppToast
+        ResultsPage --> PremiumPage
+        ResultsPage --> PaymentPage
 
-        PaymentPage -->|MercadoPago SDK| MercadoPago
-        PaymentPage -->|Gera QR Code Pix| createPixPayment (Cloud Function)
-        PaymentPage -->|Pagamento Cartão| createPayment (Cloud Function)
-        PaymentPage -->|Após pagamento| PremiumPage
+        PremiumPage -- Usa --> PremiumComponents
+        PremiumPage -- Usa --> ResultComponents
+        PremiumPage -- Usa --> CommonUI
+        PremiumPage -- Usa --> LayoutComponents
+        PremiumPage -- Usa Hooks --> useIsMobile & useAppToast
+        PremiumPage --> PaymentPage
+
+        PaymentPage -- Usa --> CommonUI
+        PaymentPage -- Usa --> LayoutComponents
+        PaymentPage -- Usa Hooks --> useIsMobile & useAppToast
+
+        %% Outras Páginas
+        IndexPage --> AboutPage
+        IndexPage --> PrivacyPolicyPage
+        IndexPage --> TermsOfUsePage
+        IndexPage --> ReceiveSharePage
+        IndexPage --> NotFoundPage
+
+        %% Componentes Gerais
+        ResultComponents -- Dependem de --> CommonUI
+        PremiumComponents -- Dependem de --> CommonUI
     end
 
-    subgraph Backend [Firebase Functions]
-        callGemini[callGemini (IA Gemini)]
-        saveAnalysisResults[saveAnalysisResults]
-        getAnalysisResults[getAnalysisResults]
-        createPayment[createPayment (Cartão)]
-        createPixPayment[createPixPayment (Pix)]
-        handlePixWebhook[handlePixWebhook (Webhook Pix)]
+    subgraph "Backend (Firebase Functions - Node.js/TypeScript)"
+        direction LR
+        callGemini["callGemini.ts\n(Google Gemini API)"]
+        saveAnalysisResults["saveAnalysisResults.ts\n(Firestore Write)"]
+        getAnalysisResults["getAnalysisResults.ts\n(Firestore Read)"]
+        createPayment["createPayment.ts\n(Mercado Pago Card API)"]
+        createPixPayment["createPixPayment.ts\n(Mercado Pago Pix API)"]
+        handlePixWebhook["handlePixWebhook.ts\n(Mercado Pago Webhook)"]
     end
 
-    PremiumPage -->|Chama IA| callGemini
-    ResultsPage -->|Chama IA| callGemini
-    PremiumPage --> saveAnalysisResults
-    ResultsPage --> getAnalysisResults
+    subgraph "External Services & Database"
+        direction LR
+        MercadoPago["Mercado Pago API"]
+        GoogleGemini["Google Gemini API"]
+        FirestoreDB["Firestore Database\n(Analysis Data, Premium Status, Payment Info)"]
+    end
 
-    PaymentPage --> createPayment
-    PaymentPage --> createPixPayment
-    createPixPayment --> handlePixWebhook
-    handlePixWebhook --> saveAnalysisResults
+    %% Frontend -> Backend Interactions
+    ResultsPage -- Chama IA --> callGemini
+    PremiumPage -- Chama IA --> callGemini
+    PremiumPage -- Salva Análise --> saveAnalysisResults
+    ResultsPage -- Obtém Análise --> getAnalysisResults
+    ReceiveSharePage -- Obtém Análise --> getAnalysisResults
 
-    InstructionsPage --> AnalyzingPage
-    AnalyzingPage --> ResultsPage
-    PaymentPage --> PremiumPage
+    PaymentPage -- Processa Cartão --> createPayment
+    PaymentPage -- Gera Pix QR --> createPixPayment
+
+    %% Backend -> External Services Interactions
+    callGemini --> GoogleGemini
+    createPayment --> MercadoPago
+    createPixPayment --> MercadoPago
+    handlePixWebhook -- Recebe Notificação --> MercadoPago
+
+    %% Backend -> Database Interactions
+    saveAnalysisResults --> FirestoreDB
+    getAnalysisResults --> FirestoreDB
+    createPayment -- Atualiza Status --> FirestoreDB
+    createPixPayment -- Salva Info Pagamento --> FirestoreDB
+    handlePixWebhook -- Atualiza Status Premium --> FirestoreDB
+
+    %% External -> Backend Interactions
+    MercadoPago -- Envia Webhook Pix --> handlePixWebhook
+
+    %% Estilos (Opcional, apenas para clareza)
+    classDef frontend fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef backend fill:#ccf,stroke:#333,stroke-width:2px;
+    classDef external fill:#cfc,stroke:#333,stroke-width:2px;
+    classDef pages fill:#eef,stroke:#99d,stroke-width:1px;
+    classDef logic fill:#ffe,stroke:#ddc,stroke-width:1px;
+    classDef components fill:#eff,stroke:#dee,stroke-width:1px;
+    classDef hooks fill:#fee,stroke:#edd,stroke-width:1px;
+
+    class WelcomePage,InstructionsPage,AnalyzingPage,ResultsPage,PremiumPage,PaymentPage,ReceiveSharePage,AboutPage,PrivacyPolicyPage,TermsOfUsePage,NotFoundPage,IndexPage pages;
+    class ChatAnalysisProvider,useChatAnalysis,parseChat,analyzeChat logic;
+    class ResultComponents,PremiumComponents,CommonUI,LayoutComponents components;
+    class useIsMobile,useAppToast hooks;
+    class callGemini,saveAnalysisResults,getAnalysisResults,createPayment,createPixPayment,handlePixWebhook backend;
+    class MercadoPago,GoogleGemini,FirestoreDB external;
+
+    class "User Interface (Frontend - React + Vite)" frontend;
+    class "Backend (Firebase Functions - Node.js/TypeScript)" backend;
+    class "External Services & Database" external;
 ```
 
 ---
