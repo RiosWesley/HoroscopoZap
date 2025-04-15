@@ -121,7 +121,7 @@ const InstructionsPage = () => {
   const steps = [
     {
       icon: <Smartphone className="h-10 w-10 text-cosmic-purple" />,
-      title: "1. Instale nosso App (PWA)",
+      title: "1. Instale nosso App",
       description: "Para a melhor experiência, adicione o HoroscopoZap à sua tela inicial. Procure o botão 'Instalar' no site.",
       image: { src: "/images/instructions/step1-install-prompt.png", alt: "Banner ou botão de instalação do PWA no site" }
     },
