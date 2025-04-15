@@ -126,12 +126,12 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
       script.async = true;
 
       script.onload = () => {
-        console.log("Mercado Pago SDK carregado.");
+        // console.log("Mercado Pago SDK carregado.");
         try {
           if (window.MercadoPago) {
             const mp = new window.MercadoPago(publicKey);
             setMpInstance(mp);
-            console.log("Instância Mercado Pago criada.");
+            // console.log("Instância Mercado Pago criada.");
           } else {
             throw new Error("Objeto window.MercadoPago não encontrado após carregar script.");
           }
@@ -155,7 +155,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
         if (window.MercadoPago) {
           const mp = new window.MercadoPago(publicKey);
           setMpInstance(mp);
-          console.log("Instância Mercado Pago criada (script pré-existente).");
+          // console.log("Instância Mercado Pago criada (script pré-existente).");
         } else {
           console.warn("Script do MP existe, mas window.MercadoPago não está definido.");
           setError("Falha ao usar script existente do Mercado Pago. Recarregue a página.");
@@ -178,7 +178,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
       if (window._mpCardFormInstance && typeof window._mpCardFormInstance.unmount === "function") {
         try {
           if (window._mpCardFormInstance && typeof window._mpCardFormInstance.unmount === "function") {
-            console.log("Desmontando cardForm porque método mudou para Pix");
+            // console.log("Desmontando cardForm porque método mudou para Pix");
             window._mpCardFormInstance.unmount();
           }
         } catch (err) {
@@ -193,7 +193,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
     try {
       try {
         if (window._mpCardFormInstance && typeof window._mpCardFormInstance.unmount === "function") {
-          console.log("Desmontando cardForm anterior...");
+          // console.log("Desmontando cardForm anterior...");
           window._mpCardFormInstance.unmount();
         }
       } catch (err) {
@@ -229,7 +229,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
               }
               setError("Erro ao preparar o formulário de pagamento.");
             } else {
-              console.log("Formulário Mercado Pago montado com sucesso.");
+              // console.log("Formulário Mercado Pago montado com sucesso.");
             }
           },
           onSubmit: async (event: any) => {
@@ -280,14 +280,14 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
               };
 
               // Logs detalhados para debug
-              console.log("Dados do CardForm:", cardData);
-              console.log("typeof transaction_amount:", typeof transactionAmountNumber, transactionAmountNumber);
-              console.log("typeof installments:", typeof installmentsNumber, installmentsNumber);
-              console.log("Email do Estado (buyerEmail):", buyerEmail);
-              console.log("Email do DOM (input#email):", emailFromDOM);
-              console.log("Email usado (finalEmail):", finalEmail);
-              console.log("analysisId (usado):", finalAnalysisId);
-              console.log("Body enviado para Cloud Function:", bodyToSend);
+              // console.log("Dados do CardForm:", cardData);
+              // console.log("typeof transaction_amount:", typeof transactionAmountNumber, transactionAmountNumber);
+              // console.log("typeof installments:", typeof installmentsNumber, installmentsNumber);
+              // console.log("Email do Estado (buyerEmail):", buyerEmail);
+              // console.log("Email do DOM (input#email):", emailFromDOM);
+              // console.log("Email usado (finalEmail):", finalEmail);
+              // console.log("analysisId (usado):", finalAnalysisId);
+              // console.log("Body enviado para Cloud Function:", bodyToSend);
 
               // Chamada para a Cloud Function
               const response = await fetch(getPaymentFunctionUrl(), {
@@ -299,7 +299,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
               });
 
               const result = await response.json();
-              console.log("Resposta da Cloud Function:", result);
+              // console.log("Resposta da Cloud Function:", result);
 
               if (!response.ok) {
                  // Lança erro para ser pego pelo catch, usando a mensagem do backend
@@ -342,7 +342,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
         // Se for um objeto com 'mount', é a instância
         cardFormInstance = result;
         window._mpCardFormInstance = cardFormInstance; // Armazena globalmente
-        console.log("Instância cardForm criada com autoMount:true (montagem automática).");
+        // console.log("Instância cardForm criada com autoMount:true (montagem automática).");
 
       } else {
         // Caso inesperado
@@ -418,7 +418,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
 
     try {
       if (paymentMethod === "pix") {
-        console.log("Iniciando pagamento via Pix");
+        // console.log("Iniciando pagamento via Pix");
 
         // Validar campos do pagador antes de enviar
         const finalEmail = buyerEmail?.trim();
@@ -444,7 +444,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
           }
         };
 
-        console.log("Body enviado para Cloud Function (Pix):", bodyToSend);
+        // console.log("Body enviado para Cloud Function (Pix):", bodyToSend);
 
         // Chamada para a nova Cloud Function createPixPayment
         const pixFunctionUrl = "https://us-central1-horoscopozap.cloudfunctions.net/createPixPayment"; // Substitua se necessário
@@ -457,7 +457,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
         });
 
         const result = await response.json();
-        console.log("Resposta da Cloud Function (Pix):", result);
+        // console.log("Resposta da Cloud Function (Pix):", result);
 
         if (!response.ok) {
           throw new Error(result.error || `Erro ${response.status} ao gerar pagamento Pix.`);
@@ -476,7 +476,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
             // Garante que não seja negativo e converte para segundos
             const remainingSeconds = Math.max(0, Math.floor((expirationDate.getTime() - now.getTime()) / 1000));
             setPixTimer(remainingSeconds); // Define o timer com os segundos restantes
-            console.log(`QR Code expiration: ${expirationDateString}, Remaining seconds: ${remainingSeconds}`);
+            // console.log(`QR Code expiration: ${expirationDateString}, Remaining seconds: ${remainingSeconds}`);
           } else {
             console.warn("Data de expiração não encontrada na resposta do pagamento. O timer pode não funcionar como esperado.");
             setPixTimer(0); // Define como 0 se a data não for encontrada
@@ -493,7 +493,7 @@ const handleIdentificationNumberChange = (e: React.ChangeEvent<HTMLInputElement>
         }
 
       } else if (paymentMethod === "credit_card") {
-        console.log("Submissão via Cartão de Crédito - SDK deve assumir.");
+        // console.log("Submissão via Cartão de Crédito - SDK deve assumir.");
         // O SDK do Mercado Pago deve interceptar a submissão do formulário
         // e chamar o callback 'onSubmit' que definimos dentro de mpInstance.cardForm
         // Se o SDK não fizer isso automaticamente (o que seria estranho),

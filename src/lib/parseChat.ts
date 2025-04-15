@@ -87,7 +87,7 @@ export const parseChat = (rawText: string): ParsedMessage[] => {
           if (trimmedLine === '') return false; // Remove linhas vazias
           // Remove mensagens de criptografia conhecidas (após o timestamp ser removido mentalmente)
           if (systemMessageKeywords.some(keyword => trimmedLine.includes(keyword) && keyword.includes('criptografia'))) {
-             console.log(`Filtering out encryption message line: ${line}`);
+             // console.log(`Filtering out encryption message line: ${line}`);
              return false;
           }
           // Filtro original (caso haja outras mensagens sem timestamp no início)
@@ -100,7 +100,7 @@ export const parseChat = (rawText: string): ParsedMessage[] => {
   const messages: ParsedMessage[] = [];
   let currentMessage: ParsedMessage | null = null;
 
-  console.log(`Starting parsing of ${lines.length} filtered lines.`); // Debug log
+  // console.log(`Starting parsing of ${lines.length} filtered lines.`); // Debug log
 
   let pendingDate: string | null = null;
   let pendingSender: string | null = null;
@@ -258,7 +258,7 @@ export const parseChat = (rawText: string): ParsedMessage[] => {
         currentMessage.message += '\n' + line.trim();
       } else if (line.trim()) {
          // Linha não correspondeu a NENHUM padrão e não é continuação. Registra como skip.
-         console.log(`Skipping unmatched line (line ${index + 1}, formatType=${formatType}): ${line}`);
+         // console.log(`Skipping unmatched line (line ${index + 1}, formatType=${formatType}): ${line}`);
       }
       // Ignora linhas que se tornaram vazias após trim (ou já eram vazias)
     } catch (error) {
@@ -269,7 +269,7 @@ export const parseChat = (rawText: string): ParsedMessage[] => {
   });
   // --- End Processing Line ---
 
-  console.log(`Finished parsing. Found ${messages.length} messages.`);
+  // console.log(`Finished parsing. Found ${messages.length} messages.`);
   return messages;
 };
 

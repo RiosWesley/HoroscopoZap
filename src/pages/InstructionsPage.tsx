@@ -65,7 +65,7 @@ const InstructionsPage = () => {
             const fileInZip = content.files[filename];
             chatText = await fileInZip.async('string'); // Extract text content
             txtFileFound = true;
-            console.log(`Found and extracted text from: ${filename}`);
+            // console.log(`Found and extracted text from: ${filename}`);
             break; // Stop after finding the first .txt file
           }
         }

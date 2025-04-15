@@ -301,7 +301,7 @@ const PremiumPage: React.FC = () => {
       }
 
       toast.info(`Solicitando ${featureType} da IA... Isso pode levar um momento.`);
-      console.log("Calling Cloud Function with:", { taskType, payload });
+      // console.log("Calling Cloud Function with:", { taskType, payload });
 
       const result = await callGeminiFunction({ taskType, payload });
 
@@ -369,7 +369,7 @@ const PremiumPage: React.FC = () => {
           else if (featureType === 'flagPersonality') updateData.aiFlagPersonalityAnalysis = (result?.data as any)?.result;
 
           await updateDoc(analysisRef, updateData);
-          console.log(`Insight ${featureType} salvo no Firestore.`);
+          // console.log(`Insight ${featureType} salvo no Firestore.`);
         }
       } catch (error) {
         console.error(`Erro ao salvar ${featureType} no Firestore:`, error);

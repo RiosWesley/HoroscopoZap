@@ -42,14 +42,14 @@ const AppContent = () => {
       e.preventDefault();
       // Store the event in the global context
       setDeferredPrompt(e as BeforeInstallPromptEvent); 
-      console.log('\'beforeinstallprompt\' event captured globally and stored in context.');
+      // console.log('\'beforeinstallprompt\' event captured globally and stored in context.');
     };
 
     window.addEventListener('beforeinstallprompt', handler);
 
     // Also listen for appinstalled event to clear the prompt from context
     window.addEventListener('appinstalled', () => {
-      console.log('PWA was installed, clearing prompt from context.');
+      // console.log('PWA was installed, clearing prompt from context.');
       setDeferredPrompt(null); // Clear from context
     });
 

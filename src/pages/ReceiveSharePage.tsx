@@ -19,13 +19,13 @@ export default function ReceiveSharePage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log("ReceiveSharePage: Componente montado. pathname:", window.location.pathname, window.location.search);
+    // console.log("ReceiveSharePage: Componente montado. pathname:", window.location.pathname, window.location.search);
 
     // Se for fluxo Web Share Target (com ?share-target na URL)
     if (window.location.pathname === "/receive-share" && window.location.search.includes("share-target")) {
       (async () => {
         try {
-          console.log("ReceiveSharePage: Detected ?share-target, buscando arquivo no cache...");
+          // console.log("ReceiveSharePage: Detected ?share-target, buscando arquivo no cache...");
           const mediaCache = await caches.open("media-share");
           const response = await mediaCache.match("shared-file");
           if (!response) {
@@ -36,7 +36,7 @@ export default function ReceiveSharePage() {
           }
           const blob = await response.blob();
           await mediaCache.delete("shared-file");
-          console.log("ReceiveSharePage: Arquivo recuperado do cache, tipo:", blob.type, "tamanho:", blob.size);
+          // console.log("ReceiveSharePage: Arquivo recuperado do cache, tipo:", blob.type, "tamanho:", blob.size);
 
           // Tenta identificar o nome do arquivo (não é garantido pelo cache, mas tentamos inferir)
           let fileName = "compartilhado.txt";
@@ -74,7 +74,7 @@ export default function ReceiveSharePage() {
           }
 
           // Loga as primeiras linhas do arquivo para depuração
-          console.log("ReceiveSharePage: Primeiras linhas do arquivo:", text.split(/\r?\n/).slice(0, 10));
+          // console.log("ReceiveSharePage: Primeiras linhas do arquivo:", text.split(/\r?\n/).slice(0, 10));
 
           // Validação: verifica se o texto parece um chat do WhatsApp
           const linhas = text.split(/\r?\n/).filter(l => l.trim().length > 0);
@@ -118,12 +118,12 @@ export default function ReceiveSharePage() {
 
     // Web Share Target API (Chrome Android)
     if ("launchQueue" in window) {
-      console.log("ReceiveSharePage: launchQueue está disponível no window.");
+      // console.log("ReceiveSharePage: launchQueue está disponível no window.");
       // @ts-ignore
       window.launchQueue.setConsumer(async (launchParams: any) => {
-        console.log("ReceiveSharePage: launchQueue.setConsumer chamado!", launchParams);
+        // console.log("ReceiveSharePage: launchQueue.setConsumer chamado!", launchParams);
         if (!launchParams.files || !launchParams.files.length) {
-          console.log("ReceiveSharePage: Nenhum arquivo recebido em launchParams.");
+          // console.log("ReceiveSharePage: Nenhum arquivo recebido em launchParams.");
           return;
         }
         const fileHandle = launchParams.files[0];
@@ -136,39 +136,39 @@ export default function ReceiveSharePage() {
         await handleFile(file);
       });
     } else {
-      console.log("ReceiveSharePage: launchQueue NÃO está disponível no window.");
+      // console.log("ReceiveSharePage: launchQueue NÃO está disponível no window.");
     }
 
     async function handleFile(file: File) {
-      console.log("handleFile: Iniciando processamento do arquivo", file.name, file.type, file.size);
+      // console.log("handleFile: Iniciando processamento do arquivo", file.name, file.type, file.size);
       try {
         let chatData;
-        console.log("handleFile: Verificando tipo de arquivo", file.name);
+        // console.log("handleFile: Verificando tipo de arquivo", file.name);
         if (file.name.endsWith(".txt")) {
-          console.log("handleFile: Arquivo TXT detectado, lendo como texto");
+          // console.log("handleFile: Arquivo TXT detectado, lendo como texto");
           const text = await file.text();
-          console.log("handleFile: Conteúdo do arquivo TXT lido", text.substring(0, 50) + "...");
+          // console.log("handleFile: Conteúdo do arquivo TXT lido", text.substring(0, 50) + "...");
           chatData = parseChat(text);
-          console.log("handleFile: parseChat (TXT) concluído");
+          // console.log("handleFile: parseChat (TXT) concluído");
         } else if (file.name.endsWith(".zip")) {
-          console.log("handleFile: Arquivo ZIP detectado, lendo como texto");
+          // console.log("handleFile: Arquivo ZIP detectado, lendo como texto");
           const text = await file.text();
-          console.log("handleFile: Conteúdo do arquivo ZIP lido (como texto)", text.substring(0, 50) + "...");
+          // console.log("handleFile: Conteúdo do arquivo ZIP lido (como texto)", text.substring(0, 50) + "...");
           chatData = parseChat(text);
-          console.log("handleFile: parseChat (ZIP) concluído");
+          // console.log("handleFile: parseChat (ZIP) concluído");
         } else {
           console.error("handleFile: Tipo de arquivo não suportado", file.name);
           throw new Error("Tipo de arquivo não suportado.");
         }
-        console.log("handleFile: setParsedMessages...");
+        // console.log("handleFile: setParsedMessages...");
         setParsedMessages(chatData);
-        console.log("handleFile: analyzeChat...");
+        // console.log("handleFile: analyzeChat...");
         const analysis = analyzeChat(chatData);
-        console.log("handleFile: setAnalysisResults...");
+        // console.log("handleFile: setAnalysisResults...");
         setAnalysisResults(analysis);
-        console.log("handleFile: navigate('/results')...");
+        // console.log("handleFile: navigate('/results')...");
         navigate("/results");
-        console.log("handleFile: Navegação para /results concluída");
+        // console.log("handleFile: Navegação para /results concluída");
       } catch (err) {
         console.error("handleFile: Erro no processamento do arquivo compartilhado", err);
         alert("Erro ao processar o arquivo compartilhado.");

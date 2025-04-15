@@ -130,7 +130,7 @@ const ResultsPage = () => {
       getAnalysisFunction({ analysisId })
         .then((result) => {
           const data = result.data as { success: boolean; results?: AnalysisResultsToSave; message?: string };
-          console.log("Dados recebidos do banco (getAnalysisFunction):", data);
+          // console.log("Dados recebidos do banco (getAnalysisFunction):", data);
           if (data.success && data.results) {
             setLoadedResults(data.results as AnalysisResultsToSaveExtended);
             setSharedLinkId(analysisId);
@@ -301,7 +301,7 @@ const ResultsPage = () => {
     if (paid === "true" && !isPremium) {
       try {
         context.setIsPremium(true);
-        console.log("Premium ativado automaticamente via localStorage");
+        // console.log("Premium ativado automaticamente via localStorage");
       } catch (e) {
         console.warn("Falha ao ativar premium via localStorage", e);
       }
@@ -411,8 +411,8 @@ const ResultsPage = () => {
 
   // --- Function to Save Analysis and Generate Link ---
   const handleSaveAndShare = async () => {
-    console.log("Análise local (contextAnalysisResults):", contextAnalysisResults);
-    console.log("Mensagens locais (contextParsedMessages):", contextParsedMessages);
+    // console.log("Análise local (contextAnalysisResults):", contextAnalysisResults);
+    // console.log("Mensagens locais (contextParsedMessages):", contextParsedMessages);
     if (!contextAnalysisResults) {
       toast.error("A análise original não está disponível para salvar.");
       return;
@@ -515,7 +515,7 @@ const ResultsPage = () => {
       }, {} as AnalysisResultsToSave['statsPerSender']),
     };
 
-    console.log("Payload que será enviado para o banco (dataToSave):", dataToSave);
+    // console.log("Payload que será enviado para o banco (dataToSave):", dataToSave);
 
     try {
       // Limitar e anonimizar as últimas 500 mensagens do contexto

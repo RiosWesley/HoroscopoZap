@@ -211,7 +211,7 @@ const initializeSenderStats = (): SenderStats => {
  * @returns An AnalysisResults object.
  */
 export const analyzeChat = (messages: ParsedMessage[]): AnalysisResults => {
-  console.log(`Starting analysis of ${messages.length} parsed messages...`);
+  // console.log(`Starting analysis of ${messages.length} parsed messages...`);
 
   const results: AnalysisResults = {
     totalMessages: 0,
@@ -506,6 +506,6 @@ export const analyzeChat = (messages: ParsedMessage[]): AnalysisResults => {
     }
   }
 
-  console.log("Analysis complete:", results);
+  // console.log("Analysis complete:", results);
   return results;
 };

@@ -49,17 +49,17 @@ const AnalyzingPage = () => {
     setError(null);
 
     try {
-      console.log("AnalyzingPage: Starting chat parsing...");
+      // console.log("AnalyzingPage: Starting chat parsing...");
       setCurrentLoadingText("Lendo o arquivo..."); // Update loading text
       const parsed = parseChat(rawChatText);
-      console.log(`AnalyzingPage: Parsing complete. ${parsed.length} messages found.`);
+      // console.log(`AnalyzingPage: Parsing complete. ${parsed.length} messages found.`);
       setParsedMessages(parsed); // Store parsed messages
 
       // Now perform analysis
       setCurrentLoadingText("Analisando as mensagens..."); // Update loading text
-      console.log("AnalyzingPage: Starting analysis...");
+      // console.log("AnalyzingPage: Starting analysis...");
       const results = analyzeChat(parsed); // Call the analysis function
-      console.log("AnalyzingPage: Analysis complete.");
+      // console.log("AnalyzingPage: Analysis complete.");
       setAnalysisResults(results); // Store analysis results in context
 
       // Simulate a short delay for the animation before navigating

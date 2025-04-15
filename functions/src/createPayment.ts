@@ -32,7 +32,7 @@ const corsHandler = cors(corsOptions);
 export const createPayment = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     if (req.method !== 'POST') {
-      console.log(`Method Not Allowed: ${req.method}`);
+      // console.log(`Method Not Allowed: ${req.method}`);
       res.status(405).json({ error: 'Método não permitido' });
       return;
     }
@@ -120,7 +120,7 @@ export const createPayment = functions.https.onRequest((req, res) => {
         }
       };
 
-      console.log("Sending payment request to Mercado Pago...");
+      // console.log("Sending payment request to Mercado Pago...");
       const idempotencyKey = crypto.randomUUID();
 
       const responseMP = await fetch("https://api.mercadopago.com/v1/payments", {
@@ -135,8 +135,8 @@ export const createPayment = functions.https.onRequest((req, res) => {
 
       const paymentResult = await responseMP.json();
 
-      console.log("Mercado Pago Response Status:", responseMP.status);
-      console.log("Mercado Pago Response Body:", paymentResult);
+      // console.log("Mercado Pago Response Status:", responseMP.status);
+      // console.log("Mercado Pago Response Body:", paymentResult);
 
       if (!responseMP.ok) {
         console.error(`Mercado Pago API error (${responseMP.status}):`, paymentResult);
@@ -164,7 +164,7 @@ export const createPayment = functions.https.onRequest((req, res) => {
         }
         // Usar a variável analysisId desestruturada
         await admin.firestore().collection("sharedAnalyses").doc(analysisId).update(analysisUpdateData);
-        console.log(`Analysis ${analysisId} updated in Firestore. Payment Approved: ${isApproved}`);
+        // console.log(`Analysis ${analysisId} updated in Firestore. Payment Approved: ${isApproved}`);
       } catch (firestoreError) {
         // Logar erro crítico, mas não impedir a resposta ao cliente
         console.error(`CRITICAL: Firestore update failed for analysis ${analysisId} after payment processing (Payment ID: ${paymentResult.id}, Status: ${paymentResult.status}). Error:`, firestoreError);

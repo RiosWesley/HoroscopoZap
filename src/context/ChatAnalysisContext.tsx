@@ -91,14 +91,14 @@ export const ChatAnalysisProvider: React.FC<ChatAnalysisProviderProps> = ({ chil
   // Function to handle the PWA installation click
   const handleInstallClick = useCallback(async () => {
     if (!deferredPrompt) {
-    console.log('Install prompt not available via context.');
+    // console.log('Install prompt not available via context.');
     return;
   }
 
   setIsPwaInstalling(true); // Set install status to true when install starts
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
-  console.log(`User response to the install prompt: ${outcome}`);
+  // console.log(`User response to the install prompt: ${outcome}`);
   // Clear the prompt once used
   setDeferredPrompt(null);
   setIsPwaInstalling(false); // Set install status back to false after prompt is handled (or dismissed)
