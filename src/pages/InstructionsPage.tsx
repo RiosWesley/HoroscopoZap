@@ -21,8 +21,9 @@ const InstructionsPage = () => {
     setIsLoading, 
     setError, 
     deferredPrompt, // Get prompt from context
-    handleInstallClick // Get handler from context
-  } = useChatAnalysis(); 
+    handleInstallClick, // Get handler from context
+    isPwaInstalling // Get install status from context
+  } = useChatAnalysis();
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -246,7 +247,7 @@ const InstructionsPage = () => {
         </div>
 
         {/* Conditionally render the install button within this page */}
-        {deferredPrompt && <InstallPwaButton onInstallClick={handleInstallClick} />}
+        {deferredPrompt && <InstallPwaButton onInstallClick={handleInstallClick} isInstalling={isPwaInstalling} />}
         
       </div>
     </GradientBackground>
