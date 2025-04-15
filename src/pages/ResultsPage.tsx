@@ -1109,7 +1109,7 @@ const ResultsPage = () => {
                        if (id) {
                          navigate(`/payment/${id}`);
                        } else {
-                         toast.error("Primeiro aperte em `Salvar e Compartilhar'.");
+                         toast.error("Primeiro aperte em `Salvar e Gerar Link'.");
                        }
                      }}
                      size="sm"

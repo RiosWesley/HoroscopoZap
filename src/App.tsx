@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from 'react'; // Add useState, useEffect
+import React, { useEffect } from 'react'; // Add useEffect back
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ChatAnalysisProvider } from './context/ChatAnalysisContext'; // Import the provider
-import InstallPwaButton from './components/InstallPwaButton'; // Import the button component
+import { ChatAnalysisProvider, useChatAnalysis } from './context/ChatAnalysisContext'; // Import the provider AND the hook
+// InstallPwaButton import remains removed
 import Index from './pages/Index';
 import WelcomePage from "./pages/WelcomePage";
 import InstructionsPage from "./pages/InstructionsPage";
@@ -22,7 +22,7 @@ import TermsOfUse from "./pages/TermsOfUse"; // Import the new Terms of Use page
 
 const queryClient = new QueryClient();
 
-// Define the BeforeInstallPromptEvent interface (TypeScript might not have it built-in)
+// Re-define BeforeInstallPromptEvent interface (needed for the effect)
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   readonly userChoice: Promise<{
@@ -32,52 +32,36 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
-const App = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+// Inner component to access context easily
+const AppContent = () => {
+  const { setDeferredPrompt } = useChatAnalysis(); // Get setter from context
 
+  // Effect to capture the install prompt globally
   useEffect(() => {
     const handler = (e: Event) => {
-      // Prevent the mini-info bar from appearing on mobile
       e.preventDefault();
-      // Stash the event so it can be triggered later.
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      console.log('\'beforeinstallprompt\' event captured.');
+      // Store the event in the global context
+      setDeferredPrompt(e as BeforeInstallPromptEvent); 
+      console.log('\'beforeinstallprompt\' event captured globally and stored in context.');
     };
 
     window.addEventListener('beforeinstallprompt', handler);
 
-    // Optional: Listen for appinstalled event
+    // Also listen for appinstalled event to clear the prompt from context
     window.addEventListener('appinstalled', () => {
-      console.log('PWA was installed');
-      // Hide the install button or provide feedback
-      setDeferredPrompt(null);
+      console.log('PWA was installed, clearing prompt from context.');
+      setDeferredPrompt(null); // Clear from context
     });
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
-      // No need to remove appinstalled listener usually, but good practice if component unmounts often
-      // window.removeEventListener('appinstalled', () => {});
+      // Optional: remove appinstalled listener if needed
+      // window.removeEventListener('appinstalled', () => {}); 
     };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      console.log('Install prompt not available.');
-      return;
-    }
-    // Show the install prompt
-    deferredPrompt.prompt();
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`User response to the install prompt: ${outcome}`);
-    // We've used the prompt, and can't use it again, clear it
-    setDeferredPrompt(null);
-  };
+  }, [setDeferredPrompt]); // Depend on the context setter function
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChatAnalysisProvider> {/* Wrap the app with the provider */}
-        <TooltipProvider>
+    <TooltipProvider>
           <Toaster />
         <Sonner position="top-center" />
         <BrowserRouter>
@@ -97,11 +81,19 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-        {/* Conditionally render the install button */}
-        {deferredPrompt && <InstallPwaButton onInstallClick={handleInstallClick} />}
+        {/* No button rendering here */}
       </TooltipProvider>
-    </ChatAnalysisProvider> {/* Close the provider */}
-  </QueryClientProvider>
+  );
+}
+
+// Main App component wraps the Provider around the Content
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ChatAnalysisProvider> {/* Provider now wraps AppContent */}
+        <AppContent />
+      </ChatAnalysisProvider>
+    </QueryClientProvider>
   );
 };
 

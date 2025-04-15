@@ -1,19 +1,28 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Add useEffect
 import { useNavigate } from 'react-router-dom';
 import JSZip from 'jszip'; // Import JSZip
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, MessageSquare, MoreVertical, Download, Upload, HelpCircle, FileArchive } from 'lucide-react'; // Replaced FileZip with FileArchive
+import { ChevronLeft, MessageSquare, MoreVertical, Download, Upload, HelpCircle, FileArchive, Smartphone, Share2 } from 'lucide-react'; // Added Smartphone, Share2
 import { useChatAnalysis } from '@/context/ChatAnalysisContext'; // Import the context hook
 import GradientBackground from '@/components/GradientBackground';
 import StepIndicator from '@/components/StepIndicator';
+import InstallPwaButton from '@/components/InstallPwaButton'; // Import the button component
 import { toast } from 'sonner';
+
+// Remove local BeforeInstallPromptEvent interface definition
 
 const InstructionsPage = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
-  // Get setters from the context
-  const { setRawChatText, setIsLoading, setError } = useChatAnalysis(); 
+  // Get PWA prompt state and handlers from context
+  const { 
+    setRawChatText, 
+    setIsLoading, 
+    setError, 
+    deferredPrompt, // Get prompt from context
+    handleInstallClick // Get handler from context
+  } = useChatAnalysis(); 
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -104,33 +113,47 @@ const InstructionsPage = () => {
       setIsLoading(false); // Ensure loading is always turned off
     }
   };
-  
-  const handleHelp = () => {
-    toast('Dica: O WhatsApp permite exportar suas conversas facilmente. Se precisar de mais ajuda, visite nosso site.', {
-      duration: 5000,
-    });
-  };
-  
+
+  // Remove local useEffect for PWA install prompt logic
+  // Remove local handleInstallClick handler
+
+  // Updated steps to prioritize PWA installation and sharing
   const steps = [
     {
+      icon: <Smartphone className="h-10 w-10 text-cosmic-purple" />,
+      title: "1. Instale nosso App (PWA)",
+      description: "Para a melhor experiência, adicione o HoroscopoZap à sua tela inicial. Procure o botão 'Instalar' no site.",
+      image: { src: "/images/instructions/step1-install-prompt.png", alt: "Banner ou botão de instalação do PWA no site" }
+    },
+    {
       icon: <MessageSquare className="h-10 w-10 text-cosmic-purple" />,
-      title: "Abra a conversa no WhatsApp",
-      description: "Selecione um chat individual ou grupo",
+      title: "2. Abra a conversa no WhatsApp",
+      description: "Selecione o chat individual ou grupo que deseja analisar.",
+      image: { src: "/images/instructions/step2-whatsapp-chat.png", alt: "Tela de conversa aberta no WhatsApp" }
     },
     {
       icon: <MoreVertical className="h-10 w-10 text-cosmic-purple" />,
-      title: "Vá em Opções > Mais > Exportar conversa",
-      description: "Toque nos três pontos no canto superior direito",
+      title: "3. Exporte a conversa",
+      description: "No WhatsApp, vá em Opções (três pontinhos) > Mais > Exportar conversa.",
+      image: { src: "/images/instructions/step3-whatsapp-export-menu.png", alt: "Menu 'Mais' do WhatsApp destacando 'Exportar conversa'" }
     },
     {
       icon: <Download className="h-10 w-10 text-cosmic-purple" />,
-      title: "Escolha 'Sem Mídia'",
-      description: "Só precisamos do texto, não das imagens (o app ignora mídias)",
+      title: "4. Escolha 'Sem Mídia'",
+      description: "Só precisamos do texto! Isso torna o arquivo menor e o processo mais rápido.",
+      image: { src: "/images/instructions/step4-whatsapp-without-media.png", alt: "Pop-up do WhatsApp perguntando 'Incluir mídia?' com 'Sem mídia' selecionado" }
     },
     {
-      icon: <FileArchive className="h-10 w-10 text-cosmic-purple" />, // Changed icon to FileArchive
-      title: "Envie o arquivo .zip ou .txt para nosso app", // Updated title
-      description: "O app extrairá o chat do .zip automaticamente!", // Updated description
+      icon: <Share2 className="h-10 w-10 text-cosmic-purple" />,
+      title: "5. Escolha 'Compartilhar'",
+      description: "Na tela de compartilhamento do seu celular, talvez precise clicar em 'Mais' ou procurar na lista de apps.",
+      image: { src: "/images/instructions/step5-share-options.png", alt: "Tela de compartilhamento do celular mostrando a opção 'Mais'" } // Updated image and text for step 5
+    },
+    { // New step 6
+      icon: <Smartphone className="h-10 w-10 text-cosmic-purple" />, // Using Smartphone icon, adjust if needed
+      title: "6. Selecione o HoroscopoZap",
+      description: "Encontre e toque no ícone do HoroscopoZap. O app será aberto e a análise começará automaticamente!",
+      image: { src: "/images/instructions/step6-select-horoscopozap.png", alt: "Lista de aplicativos para compartilhar destacando o HoroscopoZap" }
     }
   ];
 
@@ -147,12 +170,16 @@ const InstructionsPage = () => {
           <h1 className="text-2xl font-bold flex-1 text-center mr-8">Instruções</h1>
         </header>
         
-        <StepIndicator currentStep={1} totalSteps={4} />
+        {/* Updated total steps */}
+        <StepIndicator currentStep={1} totalSteps={6} /> {/* Changed totalSteps to 6 */}
         
         <div className="mt-4 mb-6">
-          <h2 className="text-xl font-bold text-center mb-4">
-            Ok, hora da mágica! Vamos pegar seu chat.
+          <h2 className="text-xl font-bold text-center mb-2">
+            Como Analisar sua Conversa
           </h2>
+           <p className="text-center text-sm opacity-80 px-4">
+            O jeito mais fácil é instalando nosso app e compartilhando a conversa direto do WhatsApp!
+          </p>
         </div>
         
         <div className="space-y-6 mb-8">
@@ -163,13 +190,26 @@ const InstructionsPage = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-lg">{step.title}</h3>
-                <p className="text-sm opacity-80">{step.description}</p>
+                <p className="text-sm opacity-80 mb-2">{step.description}</p>
+                {/* Display image if available */}
+                {step.image && (
+                  <img 
+                    src={step.image.src} 
+                    alt={step.image.alt} 
+                    className="mt-2 rounded-md border border-muted max-w-full h-auto" 
+                    loading="lazy" // Add lazy loading
+                  />
+                )}
               </div>
             </div>
           ))}
         </div>
-        
-        {/* File Upload Area */}
+
+        {/* File Upload Area - Now presented as an alternative */}
+         <div className="my-8 text-center">
+          <p className="text-lg font-semibold mb-2">Alternativa: Enviar arquivo pelo site</p>
+          <p className="text-sm opacity-80 mb-4 px-4">Se preferir não instalar o app, você pode exportar o chat para seu dispositivo e fazer o upload do arquivo (.txt ou .zip) aqui:</p>
+        </div>
         <div className="relative mb-8">
           <div className="cosmic-card border-2 border-dashed border-cosmic-purple p-8 text-center">
             <input
@@ -192,15 +232,8 @@ const InstructionsPage = () => {
           </div>
         </div>
         
-        <div className="flex items-center justify-center mb-6">
-          <button 
-            onClick={handleHelp}
-            className="flex items-center text-sm text-cosmic-darkPurple"
-          >
-            <HelpCircle className="h-4 w-4 mr-1" />
-            Problemas? Veja como fazer
-          </button>
-        </div>
+        {/* Removed the help button as instructions are clearer now */}
+        {/* <div className="flex items-center justify-center mb-6"> ... </div> */}
         
         <div className="mt-auto mb-8">
           <Button 
@@ -211,6 +244,10 @@ const InstructionsPage = () => {
             Analisar Mensagens
           </Button>
         </div>
+
+        {/* Conditionally render the install button within this page */}
+        {deferredPrompt && <InstallPwaButton onInstallClick={handleInstallClick} />}
+        
       </div>
     </GradientBackground>
   );

@@ -1,8 +1,18 @@
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react'; // Added useCallback
 import { ParsedMessage } from '../lib/parseChat'; // Correct: ParsedMessage comes from parseChat
 // Import the full type definition from the source file
 import type { AnalysisResults } from '../lib/analyzeChat'; // Correct: AnalysisResults comes from analyzeChat. REMOVED ParsedMessage import from here.
+
+// Define BeforeInstallPromptEvent interface (moved here for global access)
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
 
 interface ChatAnalysisContextType {
   rawChatText: string | null;
@@ -41,6 +51,11 @@ interface ChatAnalysisContextType {
 
   localAnalysisId: string | null;
   setLocalAnalysisId: (id: string | null) => void;
+
+  // Add PWA Install Prompt related types
+  deferredPrompt: BeforeInstallPromptEvent | null;
+  setDeferredPrompt: (prompt: BeforeInstallPromptEvent | null) => void;
+  handleInstallClick: () => Promise<void>;
 }
 
 const ChatAnalysisContext = createContext<ChatAnalysisContextType | undefined>(undefined);
@@ -68,6 +83,20 @@ export const ChatAnalysisProvider: React.FC<ChatAnalysisProviderProps> = ({ chil
   const [aiFlagPersonalityAnalysis, setAiFlagPersonalityAnalysis] = useState<Record<string, string> | null>(null); // Initialize AI flag analysis state
 
   const [localAnalysisId, setLocalAnalysisId] = useState<string | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null); // Add state for PWA prompt
+
+  // Function to handle the PWA installation click
+  const handleInstallClick = useCallback(async () => {
+    if (!deferredPrompt) {
+      console.log('Install prompt not available via context.');
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to the install prompt: ${outcome}`);
+    // Clear the prompt once used
+    setDeferredPrompt(null); 
+  }, [deferredPrompt]); // Depend on deferredPrompt
 
   // Function to reset the analysis state
   const resetAnalysis = () => {
@@ -125,6 +154,10 @@ export const ChatAnalysisProvider: React.FC<ChatAnalysisProviderProps> = ({ chil
     setAiFlagPersonalityAnalysis, // Provide AI flag analysis setter
    localAnalysisId,
    setLocalAnalysisId,
+   // Add PWA related values to the context provider
+   deferredPrompt,
+   setDeferredPrompt,
+   handleInstallClick,
  };
 
   return (
